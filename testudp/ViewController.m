@@ -63,14 +63,12 @@ static void * recv_thread(void *p) {
     char buf[PACKLEN];
     
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-    if (0 > sockfd)
-    {
+    if (0 > sockfd) {
         perror("SOCKET");
         return;
     }
     ret = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
-    if (0 > ret)
-    {
+    if (0 > ret) {
         perror("SET SOCK");
         return;
     }
@@ -90,8 +88,7 @@ static void * recv_thread(void *p) {
         perror("SEND");
     }
     siret = recvfrom(sockfd, buf, PACKLEN, 0, (struct sockaddr *)&peeraddr, &peerlen);
-    if (sizeof(peeraddr) != siret)
-    {
+    if (sizeof(peeraddr) != siret) {
         perror("Get Peer");
     }
     memcpy(&peeraddr, buf, sizeof(peeraddr));
