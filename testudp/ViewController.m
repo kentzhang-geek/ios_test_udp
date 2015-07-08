@@ -22,6 +22,7 @@
 
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *PeerReturn;
+@property (weak, nonatomic) IBOutlet UIButton *go_button;
 @property (weak, nonatomic) IBOutlet UITextField *LocalSend;
 
 @end
@@ -40,7 +41,10 @@ static void * recv_thread(void *p) {
         bzero(buf, PACKLEN);
         ret = recvfrom(udpfd, buf, PACKLEN, 0, NULL, 0);
         showdata = [NSString stringWithUTF8String:buf];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"REFRESH" object:nil];
+        //[thisview.PeerReturn setText:showdata];
+        if (nil != thisview) {
+            [thisview.PeerReturn performSelectorOnMainThread:@selector(setText:) withObject:showdata waitUntilDone:YES];
+        }
     }
     pthread_exit(NULL);
     return NULL;
@@ -55,12 +59,13 @@ static void * recv_thread(void *p) {
 }
 @synthesize PeerReturn, LocalSend;
 
-- (void) createSocket : (char *)server_addr {
+- (void) createSocket : (NSString *)in_ser_addr {
     int sockfd = -1;
     int on = 1;
     int ret;
     int siret = 0;
     char buf[PACKLEN];
+    char *server_addr = [in_ser_addr UTF8String];
     
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
     if (0 > sockfd) {
@@ -83,11 +88,11 @@ static void * recv_thread(void *p) {
     inet_pton(AF_INET, server_addr, &(peeraddr.sin_addr));
     
     /* Reg ip to server */
-    siret = sendto(sockfd, buf, 5, 0, (struct sockaddr *)&peeraddr, sizeof(peeraddr));
+    siret = (int)sendto(sockfd, buf, 5, 0, (struct sockaddr *)&peeraddr, sizeof(peeraddr));
     if (0 > siret)	{
         perror("SEND");
     }
-    siret = recvfrom(sockfd, buf, PACKLEN, 0, (struct sockaddr *)&peeraddr, &peerlen);
+    siret = (int)recvfrom(sockfd, buf, PACKLEN, 0, (struct sockaddr *)&peeraddr, &peerlen);
     if (sizeof(peeraddr) != siret) {
         perror("Get Peer");
     }
@@ -98,6 +103,7 @@ static void * recv_thread(void *p) {
     
     ret = pthread_create(&recver, NULL, recv_thread, NULL);
     
+    [thisview performSelectorOnMainThread:@selector(alertConnect) withObject:nil waitUntilDone:NO];
     /* main send loop */
 #if 0
     while (1) {
@@ -111,8 +117,15 @@ static void * recv_thread(void *p) {
 
 }
 
+- (void) alertConnect {
+    [[[UIAlertView alloc] initWithTitle:@"已连接服务器" message:@"已连接上服务器" delegate:self cancelButtonTitle:@"确认" otherButtonTitles: nil] show];
+
+}
+
 - (void) updateString {
-    [self.PeerReturn setText:showdata];
+    //[self.PeerReturn setText:showdata];
+    [self.PeerReturn setNeedsDisplay];
+    [self.view setNeedsDisplay];
     return;
 }
 
@@ -126,8 +139,15 @@ static void * recv_thread(void *p) {
     thisview = self;
     udpfd = -1;
     poweron = 1;
+    CALayer * downButtonLayer = [self.go_button layer];
+    [downButtonLayer setMasksToBounds:YES];
+    [downButtonLayer setCornerRadius:10.0];
+    [downButtonLayer setBorderWidth:1.0];
+    [downButtonLayer setBorderColor:[[UIColor grayColor] CGColor]];
+    [self.view insertSubview:self.go_button atIndex:self.go_button.tag];
     [self.LocalSend addTarget:self action:@selector(clearText) forControlEvents:UIControlEventEditingDidEndOnExit];
-    timer = [NSTimer scheduledTimerWithTimeInterval :0.01 target:self selector:@selector(updateString) userInfo:nil repeats:YES];
+
+    //timer = [NSTimer scheduledTimerWithTimeInterval :0.01 target:self selector:@selector(updateString) userInfo:nil repeats:YES];
     // Do any additional setup after loading the view, typically from a nib.
 }
 
@@ -138,22 +158,26 @@ static void * recv_thread(void *p) {
 
 -(IBAction)clicktosend:(id)sender  {
     int ret;
-    [PeerReturn setText: @"SHOW"];
     NSString * data = nil;
     if (0 < [[self.LocalSend text] length]) {  // 有数据输入
         data = [self.LocalSend text];
         data = [data stringByAppendingString:@"\n"];
         if (0 < udpfd) {
-            ret = sendto(udpfd, [data UTF8String], [[data dataUsingEncoding:NSUTF8StringEncoding] length], 0, (struct sockaddr *)&peeraddr, sizeof(peeraddr));
+            ret = (int)sendto(udpfd, [data UTF8String], [[data dataUsingEncoding:NSUTF8StringEncoding] length], 0, (struct sockaddr *)&peeraddr, sizeof(peeraddr));
         }
         else {
-            char * addr = [[self.LocalSend text] UTF8String];
-            [self createSocket:addr];
-            if (0 > udpfd) {
+            __block int once_check = 0;
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                [self performSelectorInBackground:@selector(createSocket:) withObject:[self.LocalSend text]];
+                //[self createSocket:addr];
+            });
+            if ((0 > udpfd) && (once_check)) {
                 UIAlertView * note_invailable = [[UIAlertView alloc] initWithTitle:@"未连接服务器" message:@"没有连接上服务器" delegate:self cancelButtonTitle:@"确认" otherButtonTitles: nil];
                 [note_invailable show];
             }
         }
+        [self.LocalSend setText:@""];
     }
     return;
 }
@@ -167,6 +191,7 @@ static void * recv_thread(void *p) {
     }
     thisview = nil;
     poweron = 0;
+    pthread_kill(recver, 9);
     pthread_join(recver, NULL);
 }
 

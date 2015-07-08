@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>918BD2C7-64FA-49F9-8C5F-C67D022E6313</string>
+	<key>IDESourceControlProjectName</key>
+	<string>testudp</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>1B6DB3165761018A3BAFD19EF52190072B03B25B</key>
+		<string>ssh://git.skylab.top/kent/ios_test_udp.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>testudp.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>1B6DB3165761018A3BAFD19EF52190072B03B25B</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://git.skylab.top/kent/ios_test_udp.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>1B6DB3165761018A3BAFD19EF52190072B03B25B</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>1B6DB3165761018A3BAFD19EF52190072B03B25B</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ios_test_udp</string>
+		</dict>
+	</array>
+</dict>
+</plist>
