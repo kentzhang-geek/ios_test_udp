@@ -26,6 +26,7 @@
 
 @end
 
+NSString * showdata = nil;
 ViewController *thisview = nil;
 int udpfd = -1;
 static unsigned char poweron = 0;
@@ -36,12 +37,10 @@ static void * recv_thread(void *p) {
     NSString *data = nil;
     char buf[PACKLEN];
     while (poweron) {
+        bzero(buf, PACKLEN);
         ret = recvfrom(udpfd, buf, PACKLEN, 0, NULL, 0);
-        if (nil != thisview) {
-            display = thisview.PeerReturn;
-            data = [NSString stringWithCharacters:(const unichar *)buf length:ret];
-            [display setText:data];
-        }
+        showdata = [NSString stringWithUTF8String:buf];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"REFRESH" object:nil];
     }
     pthread_exit(NULL);
     return NULL;
@@ -51,6 +50,8 @@ static void * recv_thread(void *p) {
 {
     struct sockaddr_in hostaddr, peeraddr;
     socklen_t peerlen;
+    pthread_t recver;
+    NSTimer * timer;
 }
 @synthesize PeerReturn, LocalSend;
 
@@ -59,7 +60,6 @@ static void * recv_thread(void *p) {
     int on = 1;
     int ret;
     int siret = 0;
-    pthread_t recver;
     char buf[PACKLEN];
     
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -110,10 +110,24 @@ static void * recv_thread(void *p) {
     return ;
 
 }
+
+- (void) updateString {
+    [self.PeerReturn setText:showdata];
+    return;
+}
+
+- (void) clearText {
+    [self clicktosend:self];
+    [LocalSend setText:@""];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     thisview = self;
     udpfd = -1;
+    poweron = 1;
+    [self.LocalSend addTarget:self action:@selector(clearText) forControlEvents:UIControlEventEditingDidEndOnExit];
+    timer = [NSTimer scheduledTimerWithTimeInterval :0.01 target:self selector:@selector(updateString) userInfo:nil repeats:YES];
     // Do any additional setup after loading the view, typically from a nib.
 }
 
@@ -124,11 +138,13 @@ static void * recv_thread(void *p) {
 
 -(IBAction)clicktosend:(id)sender  {
     int ret;
+    [PeerReturn setText: @"SHOW"];
     NSString * data = nil;
     if (0 < [[self.LocalSend text] length]) {  // 有数据输入
         data = [self.LocalSend text];
+        data = [data stringByAppendingString:@"\n"];
         if (0 < udpfd) {
-            ret = sendto(udpfd, [data UTF8String], [data length], 0, (struct sockaddr *)&peeraddr, sizeof(peeraddr));
+            ret = sendto(udpfd, [data UTF8String], [[data dataUsingEncoding:NSUTF8StringEncoding] length], 0, (struct sockaddr *)&peeraddr, sizeof(peeraddr));
         }
         else {
             char * addr = [[self.LocalSend text] UTF8String];
@@ -150,6 +166,8 @@ static void * recv_thread(void *p) {
         udpfd = -1;
     }
     thisview = nil;
+    poweron = 0;
+    pthread_join(recver, NULL);
 }
 
 @end
