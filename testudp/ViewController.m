@@ -161,17 +161,8 @@ static void * recv_thread(void *p) {
             ret = (int)sendto(udpfd, [data UTF8String], [[data dataUsingEncoding:NSUTF8StringEncoding] length], 0, (struct sockaddr *)&peeraddr, sizeof(peeraddr));
         }
         else {
-            __block unsigned char once_check = 1;
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
-                once_check = 0;
-                [self performSelectorInBackground:@selector(createSocket:) withObject:[self.LocalSend text]];
-                //[self createSocket:addr];
-            });
-            if ((0 > udpfd) && (once_check)) {
                 UIAlertView * note_invailable = [[UIAlertView alloc] initWithTitle:@"未连接服务器" message:@"没有连接上服务器" delegate:self cancelButtonTitle:@"确认" otherButtonTitles: nil];
                 [note_invailable show];
-            }
         }
         [self.LocalSend setText:@""];
     }
@@ -181,6 +172,7 @@ static void * recv_thread(void *p) {
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     // release udp
+#if 0
     if (0 < udpfd) {
         close(udpfd);
         udpfd = -1;
@@ -189,6 +181,7 @@ static void * recv_thread(void *p) {
     poweron = 0;
     pthread_kill(recver, 9);
     pthread_join(recver, NULL);
+#endif
 }
 
 @end

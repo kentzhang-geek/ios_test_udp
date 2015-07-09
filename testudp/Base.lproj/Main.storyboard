@@ -49,9 +49,9 @@
                                 <rect key="frame" x="124" y="448" width="46" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="SS2-sP-Eyv"/>
-                                    <constraint firstAttribute="width" constant="60" id="jlz-Ok-TGJ"/>
+                                    <constraint firstAttribute="width" constant="120" id="jlz-Ok-TGJ"/>
                                 </constraints>
-                                <state key="normal" title="Button">
+                                <state key="normal" title="设置服务器IP">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -61,7 +61,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="centerX" secondItem="Bah-h4-nE8" secondAttribute="centerX" constant="100" id="3Fz-yT-l0Z"/>
+                            <constraint firstAttribute="centerX" secondItem="Bah-h4-nE8" secondAttribute="centerX" id="3Fz-yT-l0Z"/>
                             <constraint firstAttribute="centerY" secondItem="cN2-sZ-NkJ" secondAttribute="centerY" constant="100" id="8jM-lR-1Wt"/>
                             <constraint firstAttribute="centerX" secondItem="lGn-66-YkG" secondAttribute="centerX" id="EUo-Hv-ZUP"/>
                             <constraint firstAttribute="centerX" secondItem="cN2-sZ-NkJ" secondAttribute="centerX" id="fB6-4I-LQx"/>
@@ -81,10 +81,10 @@
             </objects>
             <point key="canvasLocation" x="-168" y="191"/>
         </scene>
-        <!--Mm View Controller-->
+        <!--SetIP View-->
         <scene sceneID="8uV-os-wR7">
             <objects>
-                <viewController id="wSp-hA-cIN" customClass="mmViewController" sceneMemberID="viewController">
+                <viewController id="wSp-hA-cIN" customClass="setIPView" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Aep-wg-HMS"/>
                         <viewControllerLayoutGuide type="bottom" id="gDe-FW-EuT"/>
@@ -92,8 +92,41 @@
                     <view key="view" contentMode="scaleToFill" id="kcx-xX-gfG">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nC2-qm-6Ys" customClass="mybutton">
+                                <rect key="frame" x="277" y="304" width="46" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="CYU-6Q-wKx"/>
+                                    <constraint firstAttribute="width" constant="120" id="cy9-nS-Eb7"/>
+                                </constraints>
+                                <state key="normal" title="设置并返回">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="set_and_return:" destination="wSp-hA-cIN" eventType="touchUpInside" id="yqF-Dt-JdD"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="DIM-mX-urJ">
+                                <rect key="frame" x="252" y="200" width="97" height="60"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="eqz-wU-sVb"/>
+                                    <constraint firstAttribute="height" constant="60" id="f4W-fl-lJ0"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="centerY" secondItem="DIM-mX-urJ" secondAttribute="centerY" constant="60" id="2qy-F5-0M3"/>
+                            <constraint firstAttribute="centerY" secondItem="nC2-qm-6Ys" secondAttribute="centerY" id="CHc-W1-FzR"/>
+                            <constraint firstAttribute="centerX" secondItem="nC2-qm-6Ys" secondAttribute="centerX" id="fmk-Iw-tnD"/>
+                            <constraint firstAttribute="centerX" secondItem="DIM-mX-urJ" secondAttribute="centerX" id="hfa-GB-ebA"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="server_ip" destination="DIM-mX-urJ" id="43u-RB-awV"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Yu-qH-Xyy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

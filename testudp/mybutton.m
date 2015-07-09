@@ -13,7 +13,6 @@
 @implementation mybutton
 -(void)didAddSubview:(UIView *)subview {
     [super didAddSubview:subview];
-    [self setStyleType:ACPButtonGrey];
     [self setFlatStyleType:ACPButtonBlue];
 #if 0
     CALayer * downButtonLayer = [self layer];

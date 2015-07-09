@@ -10,6 +10,7 @@
 
 @interface mmViewController : UIViewController
 -(IBAction)clicktosend:(id)sender;
+- (void) createSocket : (NSString *)in_ser_addr ;
 @end
 
 #define PACKCNT 100
