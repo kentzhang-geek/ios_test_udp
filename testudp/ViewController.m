@@ -103,7 +103,7 @@ static void * recv_thread(void *p) {
     
     ret = pthread_create(&recver, NULL, recv_thread, NULL);
     
-    [thisview performSelectorOnMainThread:@selector(alertConnect) withObject:nil waitUntilDone:NO];
+    [thisview performSelectorOnMainThread:@selector(alertConnect:) withObject:[NSString stringWithFormat:@"%s : %d", inet_ntoa(peeraddr.sin_addr), ntohs(peeraddr.sin_port)] waitUntilDone:NO];
     /* main send loop */
 #if 0
     while (1) {
@@ -117,8 +117,8 @@ static void * recv_thread(void *p) {
 
 }
 
-- (void) alertConnect {
-    [[[UIAlertView alloc] initWithTitle:@"已连接服务器" message:@"已连接上服务器" delegate:self cancelButtonTitle:@"确认" otherButtonTitles: nil] show];
+- (void) alertConnect : (NSString *)ip{
+    [[[UIAlertView alloc] initWithTitle:@"已连接服务器" message:[NSString stringWithFormat:@"已连接上服务器 %@", ip]delegate:self cancelButtonTitle:@"确认" otherButtonTitles: nil] show];
 
 }
 
@@ -161,7 +161,7 @@ static void * recv_thread(void *p) {
             ret = (int)sendto(udpfd, [data UTF8String], [[data dataUsingEncoding:NSUTF8StringEncoding] length], 0, (struct sockaddr *)&peeraddr, sizeof(peeraddr));
         }
         else {
-                UIAlertView * note_invailable = [[UIAlertView alloc] initWithTitle:@"未连接服务器" message:@"没有连接上服务器" delegate:self cancelButtonTitle:@"确认" otherButtonTitles: nil];
+                UIAlertView * note_invailable = [[UIAlertView alloc] initWithTitle:@"未连接服务器" message:@"没有连接上服务器，多次出现此问题请重启APP" delegate:self cancelButtonTitle:@"确认" otherButtonTitles: nil];
                 [note_invailable show];
         }
         [self.LocalSend setText:@""];
