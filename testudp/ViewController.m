@@ -20,7 +20,7 @@
 
 #import "ViewController.h"
 
-@interface ViewController ()
+@interface mmViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *PeerReturn;
 @property (weak, nonatomic) IBOutlet UIButton *go_button;
 @property (weak, nonatomic) IBOutlet UITextField *LocalSend;
@@ -28,7 +28,7 @@
 @end
 
 NSString * showdata = nil;
-ViewController *thisview = nil;
+mmViewController *thisview = nil;
 int udpfd = -1;
 static unsigned char poweron = 0;
 
@@ -50,7 +50,7 @@ static void * recv_thread(void *p) {
     return NULL;
 }
 
-@implementation ViewController
+@implementation mmViewController
 {
     struct sockaddr_in hostaddr, peeraddr;
     socklen_t peerlen;

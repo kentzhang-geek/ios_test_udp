@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ACPButton.h"
 
-@interface mybutton : UIButton
+@interface mybutton : ACPButton
 
 @end

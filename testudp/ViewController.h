@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
+@interface mmViewController : UIViewController
 -(IBAction)clicktosend:(id)sender;
 @end
 
