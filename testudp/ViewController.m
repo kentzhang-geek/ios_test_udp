@@ -139,12 +139,7 @@ static void * recv_thread(void *p) {
     thisview = self;
     udpfd = -1;
     poweron = 1;
-    CALayer * downButtonLayer = [self.go_button layer];
-    [downButtonLayer setMasksToBounds:YES];
-    [downButtonLayer setCornerRadius:10.0];
-    [downButtonLayer setBorderWidth:1.0];
-    [downButtonLayer setBorderColor:[[UIColor grayColor] CGColor]];
-    [self.view insertSubview:self.go_button atIndex:self.go_button.tag];
+    //[self.view insertSubview:self.go_button atIndex:self.go_button.tag];
     [self.LocalSend addTarget:self action:@selector(clearText) forControlEvents:UIControlEventEditingDidEndOnExit];
 
     //timer = [NSTimer scheduledTimerWithTimeInterval :0.01 target:self selector:@selector(updateString) userInfo:nil repeats:YES];
@@ -166,9 +161,10 @@ static void * recv_thread(void *p) {
             ret = (int)sendto(udpfd, [data UTF8String], [[data dataUsingEncoding:NSUTF8StringEncoding] length], 0, (struct sockaddr *)&peeraddr, sizeof(peeraddr));
         }
         else {
-            __block int once_check = 0;
+            __block unsigned char once_check = 1;
             static dispatch_once_t onceToken;
             dispatch_once(&onceToken, ^{
+                once_check = 0;
                 [self performSelectorInBackground:@selector(createSocket:) withObject:[self.LocalSend text]];
                 //[self createSocket:addr];
             });
